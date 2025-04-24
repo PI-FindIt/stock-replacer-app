@@ -1,0 +1,73 @@
+{
+  "expo": {
+    "name": "FindIt Stock Replacer",
+    "slug": "stock-replacer-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logos/ios-light.png",
+    "scheme": "finditstock",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "pt.findit.stockreplacerapp",
+      "icon": {
+        "dark": "./assets/images/logos/ios-dark.png",
+        "light": "./assets/images/logos/ios-light.png",
+        "tinted": "./assets/images/logos/ios-tinted.png"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logos/android-adaptive-icon.png",
+        "monochromeImage": "./assets/images/logos/android-tinted-icon.png"
+      },
+      "package": "pt.findit.stockreplacerapp"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/logos/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/images/logos/splash-icon-light.png",
+          "dark": {
+            "backgroundColor": "#000000",
+            "image": "./assets/images/logos/splash-icon-dark.png"
+          },
+          "imageWidth": 200,
+          "resizeMode": "contain"
+        }
+      ],
+      "react-native-edge-to-edge"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0bab4576-b4ae-4290-9835-f6e61e1b2bf8"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0bab4576-b4ae-4290-9835-f6e61e1b2bf8"
+    }
+  },
+  "scripts": {
+    "codegen": "bunx graphql-codegen",
+    "codegen:watch": "bunx graphql-codegen --watch",
+    "generate": "bun run codegen && expo start -c"
+  }
+}

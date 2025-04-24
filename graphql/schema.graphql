@@ -1,0 +1,350 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+directive @defer(
+  if: Boolean! = true
+  label: String
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+type Brand {
+  children: [Brand!]!
+  friendlyName: String!
+  name: String!
+  parents: [Brand!]!
+  products: [Product!]!
+}
+
+input BrandBase {
+  name: String!
+}
+
+type Category {
+  children: [Category!]!
+  friendlyName: String!
+  name: String!
+  parents: [Category!]!
+  products: [Product!]!
+}
+
+input CategoryBase {
+  name: String!
+}
+
+input CompositeKeyInput {
+  listId: String!
+  productEan: String!
+}
+
+type CompositeKeyType {
+  listId: String!
+  productEan: String!
+}
+
+input Coordinate {
+  distance: Float!
+  latitude: Float!
+  longitude: Float!
+}
+
+input CoordinateFilter {
+  op: Operator!
+  value: Coordinate!
+}
+
+"""
+Date with time (isoformat)
+"""
+scalar DateTime
+
+enum Gender {
+  FEMALE
+  MALE
+  NON_BINARY
+  OTHER
+}
+
+input IntFilter {
+  op: Operator!
+  value: Int!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf).
+"""
+scalar JSON
+
+type ListProduct {
+  id_composite: CompositeKeyType!
+  product: Product!
+  quantity: Float!
+  status: Status!
+  supermarket: Supermarket!
+  supermarket_id: Int!
+}
+
+input ListProductInput {
+  id_composite: CompositeKeyInput!
+  quantity: Float!
+  status: Status! = ACTIVE
+  supermarket_id: Int!
+}
+
+type Mutation {
+  createBrand(model: BrandBase!): Brand!
+  createCategory(model: CategoryBase!): Category!
+  createList(userId: String!): SupermarketList
+  createProduct(model: ProductInput!): Product!
+  deleteBrand(name: String!): Boolean!
+  deleteCategory(name: String!): Boolean!
+  deleteList(id: String!): Boolean!
+  deleteProduct(name: String!): Boolean!
+  deleteProductFromList(ids: CompositeKeyInput!): Boolean!
+  deleteUser(id: String!): Boolean!
+  updateBrand(model: BrandBase!, name: String!): Brand!
+  updateCategory(model: CategoryBase!, name: String!): Category!
+  upsertProductFromList(models: [ListProductInput!]!): [ListProduct!]!
+  upsertUser(model: UserInput!): User!
+}
+
+enum NutriScore {
+  A
+  B
+  C
+  D
+  E
+  NOT_APPLICABLE
+  UNKNOWN
+}
+
+input NutriScoreFilter {
+  op: Operator!
+  value: NutriScore!
+}
+
+enum Operator {
+  ALL
+  ANY
+  CONTAINS
+  EQ
+  GE
+  GT
+  ILIKE
+  IN
+  IS
+  IS_NOT
+  LE
+  LIKE
+  LT
+  NE
+  NOT_CONTAINS
+  NOT_IN
+}
+
+enum PathType {
+  CHEAPEST
+  FASTEST
+  SHORTEST
+}
+
+type Preferences {
+  brandsDislike: [String!]!
+  brandsLike: [String!]!
+  budget: Float!
+  maxDistance: Float!
+  pathType: PathType!
+  supermarketsDislike: [Int!]!
+  supermarketsLike: [Int!]!
+}
+
+input PreferencesInput {
+  brandsDislike: [String!]! = []
+  brandsLike: [String!]! = []
+  budget: Float! = -1
+  maxDistance: Float! = 100
+  pathType: PathType! = CHEAPEST
+  supermarketsDislike: [Int!]! = []
+  supermarketsLike: [Int!]! = []
+}
+
+type Product {
+  brand: Brand!
+  brandName: String
+  category: Category!
+  categoryName: String
+  ean: String!
+  genericName: String!
+  images: [String!]!
+  ingredients: String!
+  keywords: [String!]!
+  name: String!
+  nutriScore: NutriScore!
+  nutrition: JSON!
+  quantity: String!
+  supermarkets: [SupermarketWithPrice!]!
+  unit: String!
+}
+
+input ProductFilter {
+  brandName: StrFilter = null
+  categoryName: StrFilter = null
+  ean: StrFilter = null
+  genericName: StrFilter = null
+  images: StrListFilter = null
+  ingredients: StrFilter = null
+  keywords: StrListFilter = null
+  name: StrFilter = null
+  nutriScore: NutriScoreFilter = null
+  quantity: StrFilter = null
+  unit: StrFilter = null
+}
+
+input ProductInput {
+  brandName: String
+  categoryName: String
+  ean: String!
+  genericName: String!
+  images: [String!]!
+  ingredients: String!
+  keywords: [String!]!
+  name: String!
+  nutriScore: NutriScore!
+  nutrition: JSON!
+  quantity: String!
+  unit: String!
+}
+
+type ProductWithPrice {
+  price: Float!
+  product: Product!
+}
+
+type Query {
+  brand(name: String!): Brand
+  brands(name: String!): [Brand!]!
+  categories(name: String!): [Category!]!
+  category(name: String!): Category
+  product(ean: String!): Product
+  products(filters: ProductFilter!): [Product!]!
+  supermarket(id: Int!): Supermarket
+  supermarketLocation(id: Int!, supermarketId: Int!): SupermarketLocation
+  supermarketLocations(
+    filters: SupermarketLocationFilter!
+  ): [SupermarketLocation!]!
+  supermarkets(filters: SupermarketFilter!): [Supermarket!]!
+  user(id: String!): User
+}
+
+enum Status {
+  ACTIVE
+  COMPLETED
+  SKIPPED
+}
+
+input StrFilter {
+  op: Operator!
+  value: String!
+}
+
+input StrListFilter {
+  op: Operator!
+  value: [String!]!
+}
+
+type Supermarket {
+  description: String
+  id: Int!
+  image: String
+  locations: [SupermarketLocation!]!
+  logo: String
+  name: String!
+  products: [ProductWithPrice!]!
+  services: [SupermarketServices!]!
+}
+
+input SupermarketFilter {
+  description: StrFilter = null
+  id: IntFilter = null
+  image: StrFilter = null
+  name: StrFilter = null
+  services: SupermarketServicesListFilter = null
+}
+
+type SupermarketList {
+  """
+  MongoDB document ObjectID
+  """
+  _id: String!
+  products: [ListProduct!]!
+  status: Status!
+  timestamp: DateTime!
+}
+
+type SupermarketLocation {
+  id: Int!
+  latitude: Float!
+  longitude: Float!
+  name: String
+  supermarket: Supermarket
+  supermarketId: Int!
+}
+
+input SupermarketLocationFilter {
+  coordinates: CoordinateFilter = null
+  id: IntFilter = null
+  image: StrFilter = null
+  name: StrFilter = null
+  supermarketId: IntFilter = null
+}
+
+enum SupermarketServices {
+  COFFEE
+  GAS_STATION
+  NEWSSTAND
+  PHARMACY
+  RESTAURANT
+  SELF_KIOSK
+}
+
+input SupermarketServicesListFilter {
+  op: Operator!
+  value: [SupermarketServices!]!
+}
+
+type SupermarketWithPrice {
+  price: Float!
+  supermarket: Supermarket!
+}
+
+type User {
+  """
+  MongoDB document ObjectID
+  """
+  _id: String!
+  actualList: SupermarketList
+  birth_date: String!
+  email: String!
+  first_name: String!
+  gender: Gender!
+  last_name: String!
+  preferences: Preferences!
+  supermarketLists: [SupermarketList!]!
+}
+
+input UserInput {
+  birth_date: String!
+  email: String!
+  first_name: String!
+  gender: Gender! = OTHER
+  last_name: String!
+  preferences: PreferencesInput = {
+    brandsDislike: []
+    brandsLike: []
+    budget: -1
+    maxDistance: 100
+    pathType: CHEAPEST
+    supermarketsDislike: []
+    supermarketsLike: []
+  }
+}
