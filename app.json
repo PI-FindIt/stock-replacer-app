@@ -55,7 +55,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "0bab4576-b4ae-4290-9835-f6e61e1b2bf8"
+        "projectId": "7d28ff5e-0f1b-4a20-bba5-96c22b791f80"
       }
     },
     "runtimeVersion": {
@@ -63,7 +63,8 @@
     },
     "updates": {
       "url": "https://u.expo.dev/0bab4576-b4ae-4290-9835-f6e61e1b2bf8"
-    }
+    },
+    "owner": "falcao2.2"
   },
   "scripts": {
     "codegen": "bunx graphql-codegen",
