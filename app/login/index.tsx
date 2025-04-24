@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
         <FindItLogo width={96} height={96} />
         <View className="flex flex-col items-center gap-2">
           <ThemedText type="title" ignoreDarkMode={true}>
-            FindIt Sock Replace
+            FindIt Sock Replace App
           </ThemedText>
           <ThemedText type="h3" color={"variant"} ignoreDarkMode={true}>
             Shopping easier.
