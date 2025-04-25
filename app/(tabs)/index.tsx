@@ -27,7 +27,6 @@ export const GET_USER = gql`
 
 export default function HomeScreen() {
   const router = useRouter();
-
   const { data: userData } = useQuery(GET_USER, {
     variables: { userId: USER_ID },
   });
@@ -49,21 +48,21 @@ export default function HomeScreen() {
       </View>
 
       <View className="gap-6 p-6">
-        <MenuOption
-          Icon={NotebookPen}
-          text="To stock list"
-          onPress={() => {
-            router.push("/(tabs)/shopping-list");
-          }}
-        />
+        <MenuOption Icon={MessageCircleWarning} text="Stock warnings" />
         <MenuOption
           Icon={Search}
           text="Search products"
           onPress={() => {
-            router.push("/productSearch");
+            router.push("/(tabs)/product-search");
           }}
         />
-        <MenuOption Icon={MessageCircleWarning} text="Stock warnings" />
+        <MenuOption
+          Icon={NotebookPen}
+          text="To stock list"
+          onPress={() => {
+            router.push("/(tabs)/to-stock-list");
+          }}
+        />
         <MenuOption
           Icon={Route}
           text="Stock path"
