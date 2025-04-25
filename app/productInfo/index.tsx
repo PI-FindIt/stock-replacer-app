@@ -1,9 +1,8 @@
 import Header from "@/components/Header";
 import { ThemedText } from "@/components/ThemedText";
-import CategorySelector from "@/components/ui/categorySelector";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { ArrowLeft, ImageOff } from "lucide-react-native";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Image, View } from "react-native";
 import {
   SafeAreaProvider,
@@ -12,8 +11,6 @@ import {
 import Chip from "@/components/ui/chip";
 import { Card } from "@/components/Card";
 import SupermarketPrice from "@/components/ui/supermarketPrice";
-import { NutritionalInfoGrid } from "@/components/ui/nutricionalInfoGrid";
-import Animated, { FadeIn } from "react-native-reanimated";
 import { LogoSVG } from "./logosvg";
 import { gql, useQuery } from "@apollo/client";
 import { ScrollView } from "react-native-gesture-handler";
@@ -57,20 +54,6 @@ const ProductInfo = () => {
     },
   });
 
-  const selectorConfigs = [
-    {
-      id: "productDetail",
-      choices: [
-        { id: "1", label: "Prices" },
-        { id: "2", label: "Nutrition" },
-        { id: "3", label: "Description" },
-      ],
-    },
-  ];
-  const [selections, setSelections] = useState<Record<string, string | null>>({
-    productDetail: selectorConfigs[0].choices[0].id,
-  });
-
   const product = useMemo(() => {
     if (!data?.product) return null;
 
@@ -96,13 +79,6 @@ const ProductInfo = () => {
 
   const handleBackPress = () => {
     navigation.goBack();
-  };
-
-  const handleSelectionChange = (selectorId: string, choiceId: string) => {
-    setSelections((prev) => ({
-      ...prev,
-      [selectorId]: prev[selectorId] === choiceId ? null : choiceId,
-    }));
   };
 
   if (loading) {
@@ -198,51 +174,29 @@ const ProductInfo = () => {
             </View>
           </View>
         </View>
-        <CategorySelector
-          choices={selectorConfigs[0].choices}
-          selectedChoiceId={selections.productDetail}
-          onSelect={(choiceId) =>
-            handleSelectionChange("productDetail", choiceId)
-          }
-        />
 
-        {/* SELECTIONS */}
-        <View className="mt-6">
-          {selections.productDetail === "1" && (
-            <Animated.View entering={FadeIn.duration(300).springify()}>
-              <ScrollView
-                style={{ height: "80%" }}
-                showsVerticalScrollIndicator={false}
-              >
-                <SupermarketPrice prices={product.supermarkets} />
-              </ScrollView>
-            </Animated.View>
-          )}
+        <View className="mt-6 gap-4">
+          <ScrollView
+            style={{ height: "80%" }}
+            showsVerticalScrollIndicator={false}
+          >
+            <SupermarketPrice prices={product.supermarkets} />
+          </ScrollView>
 
-          {selections.productDetail === "2" && (
-            <Animated.View entering={FadeIn.duration(300).springify()}>
-              <NutritionalInfoGrid info={product.nutrition} />
-            </Animated.View>
-          )}
-
-          {selections.productDetail === "3" && (
-            <Animated.View entering={FadeIn.duration(300).springify()}>
-              <Card>
-                {product.description !== "No description available" &&
-                product.genericName !== "" ? (
-                  <ThemedText className="px-1 pb-1">
-                    {product.genericName} INGREDIENTS: {product.description}
-                  </ThemedText>
-                ) : (
-                  <ThemedText className="px-1 pb-1">
-                    {product.description === ""
-                      ? "No description available."
-                      : product.description}
-                  </ThemedText>
-                )}
-              </Card>
-            </Animated.View>
-          )}
+          <Card>
+            {product.description !== "No description available" &&
+            product.genericName !== "" ? (
+              <ThemedText className="px-1 pb-1">
+                {product.genericName} INGREDIENTS: {product.description}
+              </ThemedText>
+            ) : (
+              <ThemedText className="px-1 pb-1">
+                {product.description === ""
+                  ? "No description available."
+                  : product.description}
+              </ThemedText>
+            )}
+          </Card>
         </View>
       </View>
     </SafeAreaProvider>
