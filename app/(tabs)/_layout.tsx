@@ -4,6 +4,7 @@ import {
   MessageCircleWarning,
   NotebookPen,
   Route,
+  Search,
 } from "lucide-react-native";
 import { HapticTab } from "@/components/HapticTab";
 import React from "react";
@@ -43,9 +44,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="shopping-list"
+        name="product-search"
         options={{
-          title: "Shopping List",
+          title: "productSearch",
+          tabBarIcon: Search,
+        }}
+      />
+      <Tabs.Screen
+        name="to-stock-list"
+        options={{
+          title: "To Stock List",
           tabBarIcon: NotebookPenIcon,
         }}
       />
