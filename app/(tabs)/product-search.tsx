@@ -1,16 +1,16 @@
 import List from "@/components/ui/list/list";
 import SearchBar from "@/components/ui/SearchBar";
-import { useState, useEffect, useRef } from "react";
-import { View, ScrollView, Modal } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Modal, ScrollView, View } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { Info } from "lucide-react-native";
-import { useRouter, useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import Chip from "@/components/ui/chip";
-import { NutriScore } from "@/graphql/graphql";
+import { NutriScore, Operator, Status } from "@/graphql/graphql";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import NutriScoreBottomSheet from "@/components/ui/optionsBottomSheet";
@@ -18,10 +18,8 @@ import BrandBottomSheet from "@/components/ui/brandBottomSheet";
 import { ThemedText } from "@/components/ThemedText";
 import { Skeleton } from "moti/skeleton";
 
-const USER_ID = "680ca5d74bd2054e801c8160";
-
 export const GET_PRODUCTS_LIST = gql`
-  query SupermarketLists($userId: String!) {
+  query CurrentListId($userId: String!) {
     user(id: $userId) {
       actualList {
         _id
@@ -64,7 +62,7 @@ export const GET_BRANDS = gql`
 `;
 
 export const ADD_PRODUCT_TO_LIST = gql`
-  mutation UpsertProductFromList($models: [ListProductInput!]!) {
+  mutation AddProductToList($models: [ListProductInput!]!) {
     upsertProductFromList(models: $models) {
       product {
         ean
@@ -74,6 +72,7 @@ export const ADD_PRODUCT_TO_LIST = gql`
 `;
 
 const Search = () => {
+  const userId = "ii";
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -111,7 +110,7 @@ const Search = () => {
   });
 
   const { data: listData } = useQuery(GET_PRODUCTS_LIST, {
-    variables: { userId: USER_ID },
+    variables: { userId: userId },
   });
 
   const handleAddProduct = (productEan: string, productName: string) => {
@@ -119,7 +118,7 @@ const Search = () => {
     setShowSuccessModal(true);
     setTimeout(() => {
       setShowSuccessModal(false);
-      router.push("/to-stock-list");
+      router.push("/(tabs)/to-stock-list");
     }, 1000);
     addProductToList({
       variables: {
@@ -131,7 +130,7 @@ const Search = () => {
             },
             quantity: 1,
             supermarket_id: 1,
-            status: "ACTIVE",
+            status: Status.Active,
           },
         ],
       },
@@ -166,16 +165,14 @@ const Search = () => {
     variables: {
       searchTerm: debouncedQuery ? `%${debouncedQuery}%` : "%%",
       nutriScoreFilter: selectedNutriScore
-        ? { op: "EQ", value: selectedNutriScore }
+        ? { op: Operator.Eq, value: selectedNutriScore }
         : null,
       brandFilter: selectedBrand
-        ? { op: "ILIKE", value: `%${selectedBrand}%` }
+        ? { op: Operator.Ilike, value: `%${selectedBrand}%` }
         : null,
     },
     skip: !debouncedQuery,
   });
-
-  console.log(data);
 
   const products = data?.products ?? [];
   const backgroundColor = useThemeColor("background");

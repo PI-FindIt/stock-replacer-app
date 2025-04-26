@@ -103,7 +103,7 @@ export default function RootLayout() {
 
   const queryClient = new QueryClient();
   const client = new ApolloClient({
-    uri: "http://192.168.1.118/",
+    uri: "http://10.102.219.126/",
     cache: new InMemoryCache(),
   });
 
@@ -127,10 +127,6 @@ export default function RootLayout() {
                   />
                   <Stack.Screen
                     name="login/index"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="productSearch/index"
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
