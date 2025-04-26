@@ -14,7 +14,7 @@ import { Button } from "@/components/Button";
 import { gql, useQuery } from "@apollo/client";
 import MenuOption from "@/components/ui/menuOption";
 
-const USER_ID = "680ca5d74bd2054e801c8160";
+const USER_ID = "680d205d121250a6d15ec9af";
 
 export const GET_USER = gql`
   query User($userId: String!) {
@@ -42,7 +42,7 @@ export default function HomeScreen() {
             Hi {userData?.user?.first_name || "there"}!
           </ThemedText>
           <ThemedText type="h3" color="variant">
-            Here's to a good day ahead.
+            A good work day awaits you.
           </ThemedText>
         </View>
       </View>

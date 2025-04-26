@@ -1,32 +1,21 @@
 import List from "@/components/ui/list/list";
 import SearchBar from "@/components/ui/SearchBar";
 import { useEffect, useRef, useState } from "react";
-import { Modal, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { Info } from "lucide-react-native";
 import { useFocusEffect, useRouter } from "expo-router";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import Chip from "@/components/ui/chip";
-import { NutriScore, Operator, Status } from "@/graphql/graphql";
+import { NutriScore, Operator } from "@/graphql/graphql";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import NutriScoreBottomSheet from "@/components/ui/optionsBottomSheet";
 import BrandBottomSheet from "@/components/ui/brandBottomSheet";
-import { ThemedText } from "@/components/ThemedText";
 import { Skeleton } from "moti/skeleton";
-
-export const GET_PRODUCTS_LIST = gql`
-  query CurrentListId($userId: String!) {
-    user(id: $userId) {
-      actualList {
-        _id
-      }
-    }
-  }
-`;
 
 export const GET_FILTERED_PRODUCTS = gql`
   query SearchProducts(
@@ -61,18 +50,7 @@ export const GET_BRANDS = gql`
   }
 `;
 
-export const ADD_PRODUCT_TO_LIST = gql`
-  mutation AddProductToList($models: [ListProductInput!]!) {
-    upsertProductFromList(models: $models) {
-      product {
-        ean
-      }
-    }
-  }
-`;
-
 const Search = () => {
-  const userId = "ii";
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -86,8 +64,6 @@ const Search = () => {
   const { data: brandsData } = useQuery(GET_BRANDS, {
     variables: { name: "" },
   });
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [addedProductName, setAddedProductName] = useState("");
   const c = useThemeColor("background");
   const theme = c === "#ffffff" ? "light" : "dark";
 
@@ -102,39 +78,6 @@ const Search = () => {
     brandBottomSheetRef.current?.close();
     setDebouncedQuery((prev) => (prev === "" ? " " : ""));
     setTimeout(() => setDebouncedQuery(searchQuery), 10);
-  };
-
-  const [addProductToList] = useMutation(ADD_PRODUCT_TO_LIST, {
-    onError: (error) => console.error("Error adding product"),
-    onCompleted: (data) => console.log("Product added"),
-  });
-
-  const { data: listData } = useQuery(GET_PRODUCTS_LIST, {
-    variables: { userId: userId },
-  });
-
-  const handleAddProduct = (productEan: string, productName: string) => {
-    setAddedProductName(productName);
-    setShowSuccessModal(true);
-    setTimeout(() => {
-      setShowSuccessModal(false);
-      router.push("/(tabs)/to-stock-list");
-    }, 1000);
-    addProductToList({
-      variables: {
-        models: [
-          {
-            id_composite: {
-              listId: listData?.user?.actualList?._id,
-              productEan: productEan,
-            },
-            quantity: 1,
-            supermarket_id: 1,
-            status: Status.Active,
-          },
-        ],
-      },
-    });
   };
 
   useFocusEffect(() => {
@@ -203,20 +146,6 @@ const Search = () => {
               setSearchQuery={setSearchQuery}
             />
           </View>
-          <Modal
-            visible={showSuccessModal}
-            transparent={true}
-            animationType="fade"
-          >
-            <View
-              className="flex-1 items-center justify-center rounded-xl p-6 shadow-lg"
-              style={{ backgroundColor: backgroundColor }}
-            >
-              <ThemedText type="h3" className="text-center">
-                {addedProductName} added to your list!
-              </ThemedText>
-            </View>
-          </Modal>
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -304,9 +233,7 @@ const Search = () => {
                   params: { id: item.ean },
                 })
               }
-              onPress={(item) => {
-                handleAddProduct(item.ean ?? "", item.name ?? "");
-              }}
+              onPress={() => {}}
             />
           )}
         </View>
