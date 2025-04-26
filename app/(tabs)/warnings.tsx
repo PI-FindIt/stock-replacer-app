@@ -1,12 +1,10 @@
 import Header from "@/components/Header";
-import BrandBottomSheet from "@/components/ui/brandBottomSheet";
 import Chip from "@/components/ui/chip";
 import NutriScoreBottomSheet from "@/components/ui/optionsBottomSheet";
 import { NutriScore } from "@/graphql/graphql";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { gql } from "@apollo/client";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigation } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import { useRef, useState } from "react";
@@ -63,17 +61,10 @@ const Warnings = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const brandBottomSheetRef = useRef<BottomSheet>(null);
   const [selectedNutriScore, setSelectedNutriScore] =
     useState<NutriScore | null>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const backgroundColor = useThemeColor("background");
-  // const { data: brandsData } = useQuery(GET_BRANDS, {
-  //   variables: { name: "" },
-  // });
-  // const brands = brandsData?.brands ?? [];
 
   const handleFilterSelect = (option: string) => {
     setSelectedNutriScore(option === "All" ? null : (option as NutriScore));
@@ -116,10 +107,6 @@ const Warnings = () => {
             onPress={() => {
               if (selectedBrand) {
                 setSelectedBrand(null);
-                setDebouncedQuery((prev) => (prev === "" ? " " : ""));
-                setTimeout(() => setDebouncedQuery(searchQuery), 10);
-              } else {
-                brandBottomSheetRef.current?.expand();
               }
             }}
           />
