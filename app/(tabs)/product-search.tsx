@@ -18,7 +18,7 @@ import BrandBottomSheet from "@/components/ui/brandBottomSheet";
 import { ThemedText } from "@/components/ThemedText";
 import { Skeleton } from "moti/skeleton";
 
-const USER_ID = "68061340cc340e20a65376ea";
+const USER_ID = "680ca5d74bd2054e801c8160";
 
 export const GET_PRODUCTS_LIST = gql`
   query SupermarketLists($userId: String!) {
@@ -174,6 +174,8 @@ const Search = () => {
     },
     skip: !debouncedQuery,
   });
+
+  console.log(data);
 
   const products = data?.products ?? [];
   const backgroundColor = useThemeColor("background");

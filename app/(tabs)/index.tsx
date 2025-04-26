@@ -14,7 +14,7 @@ import { Button } from "@/components/Button";
 import { gql, useQuery } from "@apollo/client";
 import MenuOption from "@/components/ui/menuOption";
 
-const USER_ID = "68061340cc340e20a65376ea";
+const USER_ID = "680ca5d74bd2054e801c8160";
 
 export const GET_USER = gql`
   query User($userId: String!) {
@@ -48,7 +48,13 @@ export default function HomeScreen() {
       </View>
 
       <View className="gap-6 p-6">
-        <MenuOption Icon={MessageCircleWarning} text="Stock warnings" />
+        <MenuOption
+          Icon={MessageCircleWarning}
+          text="Stock warnings"
+          onPress={() => {
+            router.push("/(tabs)/warnings");
+          }}
+        />
         <MenuOption
           Icon={Search}
           text="Search products"

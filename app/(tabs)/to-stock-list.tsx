@@ -14,7 +14,7 @@ import { Product } from "@/graphql/graphql";
 import LinearGradientMask from "@/components/LinearGradientMask";
 import { Skeleton } from "moti/skeleton";
 
-const USER_ID = "68061340cc340e20a65376ea";
+const USER_ID = "680ca5d74bd2054e801c8160";
 
 export const GET_PRODUCTS_LIST = gql`
   query SupermarketLists($userId: String!) {

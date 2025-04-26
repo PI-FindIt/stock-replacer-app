@@ -21,7 +21,7 @@ const Warnings = () => {
       <Header Title="Stock Warnings" IconLeftLeft={ArrowLeft} />
       <View style={{ flex: 1, paddingBottom: 20 }}>
         <View className="flex-1 items-center justify-center">
-          <ThemedText type="title" color="gradient">
+          <ThemedText type="h1" color="gradient">
             Stock warnings
           </ThemedText>
           <ThemedText type="h3" color="variant">
