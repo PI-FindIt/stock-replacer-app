@@ -1,58 +1,44 @@
 import Header from "@/components/Header";
-import Chip from "@/components/ui/chip";
-import NutriScoreBottomSheet from "@/components/ui/optionsBottomSheet";
-import { NutriScore } from "@/graphql/graphql";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { gql } from "@apollo/client";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import { useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { useCallback, useMemo } from "react";
+import { useColorScheme, View } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import List from "@/components/ui/list/list";
+import { Skeleton } from "moti/skeleton";
+import { ThemedText } from "@/components/ThemedText";
+import { gql, useQuery } from "@apollo/client";
+import { useThemeColor } from "@/hooks/useThemeColor";
+
+const USER_ID = "68109cfe9179b71ba1cccb41";
 
 export const GET_PRODUCTS_LIST = gql`
   query SupermarketLists($userId: String!) {
     user(id: $userId) {
       actualList {
         _id
+        products {
+          product {
+            ean
+            name
+            genericName
+            quantity
+            images
+            categoryName
+            brandName
+            supermarkets {
+              price
+              supermarket {
+                id
+              }
+            }
+          }
+          quantity
+        }
       }
-    }
-  }
-`;
-
-export const GET_FILTERED_PRODUCTS = gql`
-  query SearchProducts(
-    $searchTerm: String!
-    $nutriScoreFilter: NutriScoreFilter
-    $brandFilter: StrFilter
-  ) {
-    products(
-      filters: {
-        name: { op: ILIKE, value: $searchTerm }
-        nutriScore: $nutriScoreFilter
-        brandName: $brandFilter
-      }
-    ) {
-      ean
-      name
-      brandName
-      genericName
-      quantity
-      images
-      categoryName
-      nutriScore
-    }
-  }
-`;
-
-export const GET_BRANDS = gql`
-  query Brands($name: String!) {
-    brands(name: $name) {
-      name
     }
   }
 `;
@@ -60,90 +46,86 @@ export const GET_BRANDS = gql`
 const Warnings = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
-  const [selectedNutriScore, setSelectedNutriScore] =
-    useState<NutriScore | null>(null);
-  const bottomSheetRef = useRef<BottomSheet>(null);
   const backgroundColor = useThemeColor("background");
+  const theme = useColorScheme();
 
-  const handleFilterSelect = (option: string) => {
-    setSelectedNutriScore(option === "All" ? null : (option as NutriScore));
-    bottomSheetRef.current?.close();
-  };
+  const { data, loading, refetch } = useQuery(GET_PRODUCTS_LIST, {
+    variables: {
+      userId: USER_ID,
+    },
+  });
 
-  const filterOptions = {
-    nutriScore: Object.values(NutriScore).filter(
-      (val) => typeof val === "string",
-    ) as string[],
-  };
+  const products = useMemo(() => {
+    return (
+      data?.user?.actualList?.products?.map((listProduct: any) => ({
+        ...listProduct.product,
+        listQuantity: listProduct.quantity,
+      })) || []
+    );
+  }, [data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
+
+  if (loading) {
+    return (
+      <View style={{ paddingTop: insets.top }} className="flex-1 px-4">
+        <Header
+          Title="Stock Warnings"
+          IconLeftLeft={ArrowLeft}
+          onLeftLeftPress={() => navigation.goBack()}
+        />
+        <View className="gap-4 pt-8">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+            <Skeleton
+              key={item}
+              width="100%"
+              height={80}
+              radius={24}
+              backgroundColor={backgroundColor}
+              colorMode={theme ?? "light"}
+            />
+          ))}
+        </View>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaProvider
       style={{
         paddingTop: insets.top,
         paddingBottom: insets.bottom + 24,
-        paddingHorizontal: 8,
-        gap: 14,
+        gap: 24,
+        flex: 1,
       }}
     >
-      <Header
-        Title="Stock Warnings"
-        IconLeftLeft={ArrowLeft}
-        onLeftLeftPress={() => navigation.goBack()}
-      />
-      <View className="flex flex-col gap-4 pb-20">
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          className="flex overflow-visible px-4"
-          contentContainerStyle={{
-            columnGap: 8,
-          }}
-        >
-          <Chip
-            label={selectedBrand ?? "Brand"}
-            hasDropdown={true}
-            selected={!!selectedBrand}
-            onPress={() => {
-              if (selectedBrand) {
-                setSelectedBrand(null);
-              }
-            }}
-          />
-          <Chip
-            label={
-              selectedNutriScore ? `Score: ${selectedNutriScore}` : "NutriScore"
-            }
-            hasDropdown={true}
-            selected={!!selectedNutriScore}
-            onPress={() => {
-              bottomSheetRef.current?.expand();
-            }}
-          />
-        </ScrollView>
-        {/* <View className="flex-1 items-center justify-center">
-          <ThemedText type="h1" color="gradient">
-            Stock warnings
-          </ThemedText>
-          <ThemedText type="h3" color="variant">
-            No stock warnings available.
-          </ThemedText>
-        </View> */}
+      <View className="px-2">
+        <Header
+          Title="Stock Warnings"
+          IconLeftLeft={ArrowLeft}
+          onLeftLeftPress={() => navigation.goBack()}
+        />
       </View>
 
-      <NutriScoreBottomSheet
-        bottomSheetRef={bottomSheetRef}
-        onFilterSelect={handleFilterSelect}
-        filterOptions={filterOptions.nutriScore}
-        backgroundColor={backgroundColor}
-      />
-
-      {/* <BrandBottomSheet
-        bottomSheetRef={brandBottomSheetRef}
-        brands={brands}
-        onBrandSelect={handleBrandSelect}
-        backgroundColor={backgroundColor}
-      /> */}
+      {products.length === 0 ? (
+        <View className="flex-1 items-center justify-center pb-24">
+          <ThemedText type="h3">No stock warnings</ThemedText>
+        </View>
+      ) : (
+        <List
+          items={products}
+          onPress={(item) =>
+            router.push({
+              pathname: "/productInfo",
+              params: { id: item.ean },
+            })
+          }
+        />
+      )}
     </SafeAreaProvider>
   );
 };
