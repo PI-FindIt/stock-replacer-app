@@ -1,13 +1,13 @@
 import { FlatList, Image, TouchableOpacity, View } from "react-native";
 import { ImageOff, LucideIcon } from "lucide-react-native";
 import { ThemedText } from "../../ThemedText";
-import GradientCircle from "@/components/GradientCircle";
 import { LinearGradient } from "@/components/LinearGradient";
 import { ThemedIcon } from "@/components/ThemedIcon";
 import themeConfig from "@/tailwind.config";
 import { ThemedView } from "@/components/ThemedView";
 import { Product } from "@/graphql/graphql";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { Button } from "@/components/Button";
 
 interface ListProps {
   items: (Partial<Product> & {
@@ -16,17 +16,10 @@ interface ListProps {
     supermarketId?: number;
   })[];
   icon?: LucideIcon;
-  expanded?: boolean;
   stroke?: boolean;
   glow?: boolean;
   onIconPress?: (item: Partial<Product>) => void;
   onPress?: (item: Partial<Product>) => void;
-  onQuantityPress?:
-    | ((item: Partial<Product>) => void)
-    | ((item: Product & { listQuantity?: number }) => void);
-  onQuantityLongPress?:
-    | ((item: Partial<Product>) => void)
-    | ((item: Product & { listQuantity?: number }) => void);
 }
 
 const ItemSeparator = () => <View className={"h-4"} />;
@@ -34,13 +27,10 @@ const ItemSeparator = () => <View className={"h-4"} />;
 const List = ({
   items,
   icon: Icon,
-  expanded = true,
   stroke = false,
   glow = false,
   onIconPress,
   onPress = () => {},
-  onQuantityPress = () => {},
-  onQuantityLongPress = () => {},
 }: ListProps) => {
   const grey = useThemeColor("secondaryVariant");
 
@@ -89,50 +79,24 @@ const List = ({
                         ? item.name.substring(0, 28) + "..."
                         : item.name}
                     </ThemedText>
-                    <ThemedText>
-                      {item.brandName
-                        ? item.brandName.charAt(0).toUpperCase() +
-                          item.brandName.slice(1)
-                        : ""}
-                    </ThemedText>
+                    <ThemedText>{item.quantity}</ThemedText>
                   </View>
 
-                  {Icon && (
+                  {Icon ? (
                     <TouchableOpacity onPress={() => onIconPress?.(item)}>
                       <View className="flex pl-4">
                         <ThemedIcon Icon={Icon} color="gradient" />
                       </View>
                     </TouchableOpacity>
+                  ) : (
+                    <View className="pl-4">
+                      <Button
+                        text={"Replace " + item.listQuantity}
+                        onPress={() => {}}
+                      ></Button>
+                    </View>
                   )}
                 </View>
-
-                {expanded && (
-                  <View className="flex-row items-center justify-between pt-4">
-                    <TouchableOpacity
-                      onPress={() =>
-                        onQuantityPress(
-                          item as Product & { listQuantity?: number },
-                        )
-                      }
-                      onLongPress={() =>
-                        onQuantityLongPress(
-                          item as Product & { listQuantity?: number },
-                        )
-                      }
-                    >
-                      <GradientCircle
-                        text={item.listQuantity?.toString() ?? ""}
-                        size={38}
-                      />
-                    </TouchableOpacity>
-                    <ThemedText>
-                      {item.quantity?.toString().substring(0, 20)}
-                    </ThemedText>
-                    <ThemedText color="gradient" type="h3">
-                      {item.cheapestPrice ? `${item.cheapestPrice}€` : "N/A"}
-                    </ThemedText>
-                  </View>
-                )}
               </ThemedView>
             </ListItemWrapper>
           </TouchableOpacity>
