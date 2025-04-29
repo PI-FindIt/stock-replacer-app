@@ -10,20 +10,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ItemCountCard from "@/components/ui/totalItemsAndPrice";
 import { router } from "expo-router";
 import Path from "@/assets/images/path.png";
-import { useQuery, gql } from "@apollo/client";
-import { LoadingIcon } from "@/components/LoadingIcon";
-import ErrorComponent from "@/components/ErrorComponent";
-
-const GET_SUPERMARKET_INFO = gql`
-  query Supermarket($id: Int!) {
-    supermarket(id: $id) {
-      description
-      image
-      name
-      services
-    }
-  }
-`;
 
 export default function NavigationScreen() {
   const insets = useSafeAreaInsets();
@@ -32,10 +18,6 @@ export default function NavigationScreen() {
   const iconBackgroundColor = useThemeColor("text");
   const initialContentOpacity = useMemo(() => new Animated.Value(1), []);
   const newContentOpacity = useMemo(() => new Animated.Value(0), []);
-
-  const { loading, error, data } = useQuery(GET_SUPERMARKET_INFO, {
-    variables: { id: 1 },
-  });
 
   useEffect(() => {
     toggleState();
@@ -68,22 +50,10 @@ export default function NavigationScreen() {
     };
   }, [initialContentOpacity, newContentOpacity, toggleState]);
 
-  if (loading) {
-    return <LoadingIcon />;
-  }
-
-  if (error) {
-    return <ErrorComponent type={"error"} error={error} />;
-  }
-
-  if (!data?.supermarket) {
-    return <ErrorComponent type={"notFound"} />;
-  }
-
   return (
     <View style={{ paddingTop: insets.top }} className="flex-1">
       <ThemedText color="gradient" type="h1" className="py-4 text-center">
-        In-Store Navigation
+        Replace path
       </ThemedText>
 
       <View className="flex-1">
@@ -96,7 +66,7 @@ export default function NavigationScreen() {
         >
           <Sparkles color={iconBackgroundColor} width={64} height={64} />
           <ThemedText type="body" className="text-center">
-            Calculating best{"\n"}supermarket and route
+            Calculating best{"\n"}route
           </ThemedText>
         </Animated.View>
 
@@ -110,29 +80,14 @@ export default function NavigationScreen() {
           >
             <View className="flex flex-col gap-8 p-4">
               <DistanceCardSet
-                supermarketName={data!.supermarket!.name}
-                distance="8.3"
-                isAtLocation={false}
-                destinationCoords={{ lat: 39.8222, lng: -7.4947 }}
                 onStartShoppingPress={() =>
                   router.push({
                     pathname: "/navigation-in-store",
                   })
                 }
               />
-              <SupermarketCard
-                storeName={data?.supermarket?.name ?? "PLACEHOLDER"}
-                distance="1.2 km"
-                imageSource={{ uri: data?.supermarket?.image }}
-                onDetailsPress={() =>
-                  router.push({
-                    pathname: "/supermarketInfo",
-                    params: { id: "1" },
-                  })
-                }
-              />
-              <ItemCountCard count={6} label="Total items" />
-              <ItemCountCard count={"21.60€"} label="Total price" />
+              <ItemCountCard count={322} label="Total items" />
+              <ItemCountCard count={"7"} label="Total categories" />
               <SupermarketCard
                 storeName="Fastest path"
                 distance="~ 7 min"
