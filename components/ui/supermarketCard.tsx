@@ -51,7 +51,7 @@ const SupermarketCard: React.FC<ListItemProps> = ({
             <Image
               source={imageSource}
               resizeMode="cover"
-              className="h-32 w-full"
+              className="h-64 w-full"
             />
           </View>
         </LinearGradient>
@@ -59,7 +59,7 @@ const SupermarketCard: React.FC<ListItemProps> = ({
         <Image
           source={imageSource}
           resizeMode="cover"
-          className="h-32 w-full rounded-xl"
+          className="h-64 w-full rounded-xl"
         />
       )}
     </View>

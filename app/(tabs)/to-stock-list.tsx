@@ -187,7 +187,10 @@ const ListScreen = () => {
       </View>
     );
 
-  if (!initialLoading && !loading && !hasActiveList) {
+  if (
+    groupedData.length === 0 ||
+    (!initialLoading && !loading && !hasActiveList)
+  ) {
     return (
       <View
         style={{ paddingTop: insets.top }}
@@ -230,45 +233,37 @@ const ListScreen = () => {
         </View>
       )}
 
-      {groupedData.length === 0 ? (
-        <View className="flex-1 items-center justify-center">
-          <ThemedText type="body" className="text-center">
-            Search new products.
-          </ThemedText>
-        </View>
-      ) : (
-        <FlatList
-          data={groupedData}
-          keyExtractor={(item) => item.title}
-          contentContainerStyle={{ gap: 24, paddingBottom: insets.bottom + 96 }}
-          renderItem={({ item: category }) => {
-            const categoryTitle = category.title
-              .replace(/-/g, " ")
-              .replace(/\b\w/g, (char) => char.toUpperCase());
-            return (
-              <View key={categoryTitle} className="gap-3">
-                <ListTitle
-                  title={categoryTitle}
-                  isCollapsed={collapsedSections[categoryTitle]}
-                  toggleCollapse={toggleCollapse}
+      <FlatList
+        data={groupedData}
+        keyExtractor={(item) => item.title}
+        contentContainerStyle={{ gap: 24, paddingBottom: insets.bottom + 96 }}
+        renderItem={({ item: category }) => {
+          const categoryTitle = category.title
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+          return (
+            <View key={categoryTitle} className="gap-3">
+              <ListTitle
+                title={categoryTitle}
+                isCollapsed={collapsedSections[categoryTitle]}
+                toggleCollapse={toggleCollapse}
+              />
+              {!collapsedSections[categoryTitle] && (
+                <List
+                  items={category.items}
+                  onPress={(item) =>
+                    router.push({
+                      pathname: "/productInfo",
+                      params: { id: item.ean },
+                    })
+                  }
+                  quantityCircle={true}
                 />
-                {!collapsedSections[categoryTitle] && (
-                  <List
-                    items={category.items}
-                    onPress={(item) =>
-                      router.push({
-                        pathname: "/productInfo",
-                        params: { id: item.ean },
-                      })
-                    }
-                    quantityCircle={true}
-                  />
-                )}
-              </View>
-            );
-          }}
-        />
-      )}
+              )}
+            </View>
+          );
+        }}
+      />
     </View>
   );
 };

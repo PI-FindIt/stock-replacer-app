@@ -113,7 +113,9 @@ const Warnings = () => {
 
       {products.length === 0 ? (
         <View className="flex-1 items-center justify-center pb-24">
-          <ThemedText type="h3">No stock warnings</ThemedText>
+          <ThemedText type="body" className="text-center">
+            {"Stay tuned - no stock" + "\n" + "updates for now."}
+          </ThemedText>
         </View>
       ) : (
         <List
