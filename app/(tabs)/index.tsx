@@ -14,13 +14,29 @@ import { Button } from "@/components/Button";
 import { gql, useQuery } from "@apollo/client";
 import MenuOption from "@/components/ui/menuOption";
 
-const USER_ID = "680d205d121250a6d15ec9af";
+const USER_ID = "68109cfe9179b71ba1cccb41";
 
 export const GET_USER = gql`
   query User($userId: String!) {
     user(id: $userId) {
       _id
       first_name
+    }
+  }
+`;
+
+export const GET_PRODUCTS_LIST = gql`
+  query SupermarketLists($userId: String!) {
+    user(id: $userId) {
+      actualList {
+        _id
+        products {
+          product {
+            ean
+          }
+          quantity
+        }
+      }
     }
   }
 `;
@@ -54,6 +70,7 @@ export default function HomeScreen() {
           onPress={() => {
             router.push("/(tabs)/warnings");
           }}
+          quantity={true}
         />
         <MenuOption
           Icon={Search}
@@ -68,6 +85,7 @@ export default function HomeScreen() {
           onPress={() => {
             router.push("/(tabs)/to-stock-list");
           }}
+          quantity={true}
         />
         <MenuOption
           Icon={Route}
