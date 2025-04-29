@@ -7,12 +7,12 @@ interface GradientCircleProps {
   size?: number;
 }
 
-const GradientCircle = ({ text, size = 50 }: GradientCircleProps) => {
+const GradientCircle = ({ text, size = 42 }: GradientCircleProps) => {
   const isPill = text.length > 2;
   const theme = useColorScheme();
 
   const containerWidth = isPill
-    ? Math.max(size, size + (text.length - 2) * 10)
+    ? Math.max(size, size + (text.length - 2) * 16)
     : size;
 
   return (

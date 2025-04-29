@@ -1,16 +1,15 @@
 import React from "react";
 import { Card } from "../Card";
 import { ThemedText } from "../ThemedText";
-import { View, Pressable } from "react-native";
+import { View, Pressable, useColorScheme } from "react-native";
 import { LucideIcon } from "lucide-react-native";
-import { colorScheme } from "nativewind";
-import themeColors from "@/tailwind.config";
 import GradientCircle from "../GradientCircle";
 
 interface MenuOptionProps {
   text: string;
   Icon: LucideIcon;
   quantity?: boolean;
+  quantityValue?: number;
   onPress?: () => void;
 }
 
@@ -19,11 +18,10 @@ export default function MenuOption({
   text,
   onPress,
   quantity = false,
+  quantityValue = 0,
 }: Readonly<MenuOptionProps>) {
-  const iconColor =
-    colorScheme.get() === "dark"
-      ? themeColors.theme.colors.white
-      : themeColors.theme.colors.black;
+  const theme = useColorScheme();
+  const iconColor = theme === "dark" ? "white" : "black";
 
   return (
     <Pressable onPress={onPress}>
@@ -32,8 +30,8 @@ export default function MenuOption({
           <Icon size={26} color={iconColor} />
           <ThemedText type="h3">{text}</ThemedText>
           {quantity && (
-            <View className="ml-auto flex-row items-end">
-              <GradientCircle text={"9"} />
+            <View className="ml-auto flex-row items-end py-4">
+              <GradientCircle text={String(quantityValue)} />
             </View>
           )}
         </View>
