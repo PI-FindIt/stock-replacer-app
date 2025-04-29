@@ -224,15 +224,13 @@ const Search = () => {
           ) : (
             <List
               items={products}
-              expanded={false}
               icon={Info}
-              onIconPress={(item) =>
+              onPress={(item) =>
                 router.push({
                   pathname: "/productInfo",
                   params: { id: item.ean },
                 })
               }
-              onPress={() => {}}
             />
           )}
         </View>
