@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useEffect, useState } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { EllipsisVertical, Route, Search } from "lucide-react-native";
+import { Route, Search } from "lucide-react-native";
 import ListTitle from "@/components/ui/list/listTitle";
 import List from "@/components/ui/list/list";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -240,7 +240,7 @@ const ListScreen = () => {
         <FlatList
           data={groupedData}
           keyExtractor={(item) => item.title}
-          contentContainerStyle={{ gap: 32, paddingBottom: insets.bottom + 96 }}
+          contentContainerStyle={{ gap: 24, paddingBottom: insets.bottom + 96 }}
           renderItem={({ item: category }) => {
             const categoryTitle = category.title
               .replace(/-/g, " ")
@@ -255,13 +255,13 @@ const ListScreen = () => {
                 {!collapsedSections[categoryTitle] && (
                   <List
                     items={category.items}
-                    icon={EllipsisVertical}
-                    onIconPress={(item) =>
+                    onPress={(item) =>
                       router.push({
                         pathname: "/productInfo",
                         params: { id: item.ean },
                       })
                     }
+                    quantityCircle={true}
                   />
                 )}
               </View>

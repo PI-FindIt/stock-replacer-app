@@ -8,6 +8,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { Product } from "@/graphql/graphql";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Button } from "@/components/Button";
+import GradientCircle from "@/components/GradientCircle";
 
 interface ListProps {
   items: (Partial<Product> & {
@@ -18,6 +19,7 @@ interface ListProps {
   icon?: LucideIcon;
   stroke?: boolean;
   glow?: boolean;
+  quantityCircle?: boolean;
   onIconPress?: (item: Partial<Product>) => void;
   onPress?: (item: Partial<Product>) => void;
 }
@@ -29,6 +31,7 @@ const List = ({
   icon: Icon,
   stroke = false,
   glow = false,
+  quantityCircle = false,
   onIconPress,
   onPress = () => {},
 }: ListProps) => {
@@ -90,10 +93,16 @@ const List = ({
                     </TouchableOpacity>
                   ) : (
                     <View className="pl-4">
-                      <Button
-                        text={"Replace " + item.listQuantity}
-                        onPress={() => {}}
-                      ></Button>
+                      {quantityCircle ? (
+                        <GradientCircle
+                          text={item.listQuantity?.toString() ?? "0"}
+                        />
+                      ) : (
+                        <Button
+                          text={"Replace " + item.listQuantity}
+                          onPress={() => {}}
+                        ></Button>
+                      )}
                     </View>
                   )}
                 </View>

@@ -1,6 +1,5 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, useColorScheme, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { LinearGradient } from "@/components/LinearGradient";
 
 interface GradientCircleProps {
@@ -9,22 +8,38 @@ interface GradientCircleProps {
 }
 
 const GradientCircle = ({ text, size = 50 }: GradientCircleProps) => {
-  const backgroundColor = useThemeColor("background");
+  const isPill = text.length > 2;
+  const theme = useColorScheme();
+
+  const containerWidth = isPill
+    ? Math.max(size, size + (text.length - 2) * 10)
+    : size;
 
   return (
     <LinearGradient
       style={[
-        styles(backgroundColor).gradientBorder,
-        { width: size, height: size, borderRadius: size },
+        styles.gradientBorder,
+        {
+          width: containerWidth,
+          height: size,
+          borderRadius: isPill ? size / 2 : size,
+        },
       ]}
     >
       <View
         style={[
-          styles(backgroundColor).innerCircle,
-          { width: size - 3.7, height: size - 3.1, borderRadius: size },
+          styles.innerContainer,
+          {
+            width: containerWidth - 4,
+            height: size - 4,
+            borderRadius: isPill ? size / 2 : size,
+          },
         ]}
       >
-        <ThemedText type="h3" color="gradient">
+        <ThemedText
+          type="h3"
+          style={{ color: theme === "light" ? "white" : "black" }}
+        >
           {text}
         </ThemedText>
       </View>
@@ -32,18 +47,16 @@ const GradientCircle = ({ text, size = 50 }: GradientCircleProps) => {
   );
 };
 
-const styles = (backgroundColor: string) =>
-  StyleSheet.create({
-    gradientBorder: {
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 3,
-    },
-    innerCircle: {
-      backgroundColor: backgroundColor,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  });
+const styles = StyleSheet.create({
+  gradientBorder: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 2,
+  },
+  innerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default GradientCircle;
