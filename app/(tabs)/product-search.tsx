@@ -1,7 +1,7 @@
 import List from "@/components/ui/list/list";
 import SearchBar from "@/components/ui/SearchBar";
 import { useEffect, useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, useColorScheme, View } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -64,8 +64,7 @@ const Search = () => {
   const { data: brandsData } = useQuery(GET_BRANDS, {
     variables: { name: "" },
   });
-  const c = useThemeColor("background");
-  const theme = c === "#ffffff" ? "light" : "dark";
+  const theme = useColorScheme();
 
   const brands = brandsData?.brands ?? [];
 
@@ -193,7 +192,7 @@ const Search = () => {
                       height={64}
                       radius={12}
                       backgroundColor={backgroundColor}
-                      colorMode={theme}
+                      colorMode={theme ?? "light"}
                     />
                     <View className="gap-2">
                       <Skeleton
@@ -201,14 +200,14 @@ const Search = () => {
                         height={20}
                         radius={4}
                         backgroundColor={backgroundColor}
-                        colorMode={theme}
+                        colorMode={theme ?? "light"}
                       />
                       <Skeleton
                         width={100}
                         height={16}
                         radius={4}
                         backgroundColor={backgroundColor}
-                        colorMode={theme}
+                        colorMode={theme ?? "light"}
                       />
                     </View>
                   </View>
@@ -217,7 +216,7 @@ const Search = () => {
                     height={24}
                     radius={12}
                     backgroundColor={backgroundColor}
-                    colorMode={theme}
+                    colorMode={theme ?? "light"}
                   />
                 </View>
               ))}
