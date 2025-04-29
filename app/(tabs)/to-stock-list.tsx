@@ -9,12 +9,11 @@ import { ThemedText } from "@/components/ThemedText";
 import Header from "@/components/Header";
 import themeConfig from "@/tailwind.config";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { Product } from "@/graphql/graphql";
+import { gql, useQuery } from "@apollo/client";
 import LinearGradientMask from "@/components/LinearGradientMask";
 import { Skeleton } from "moti/skeleton";
 
-const USER_ID = "680ca5d74bd2054e801c8160";
+const USER_ID = "68109cfe9179b71ba1cccb41";
 
 export const GET_PRODUCTS_LIST = gql`
   query SupermarketLists($userId: String!) {
@@ -57,17 +56,6 @@ export const CREATE_LIST = gql`
   }
 `;
 
-const UPDATE_PRODUCT_QUANTITY = gql`
-  mutation UpsertProductFromList($models: [ListProductInput!]!) {
-    upsertProductFromList(models: $models) {
-      product {
-        ean
-      }
-      quantity
-    }
-  }
-`;
-
 const ListScreen = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -84,15 +72,6 @@ const ListScreen = () => {
     variables: {
       userId: USER_ID,
     },
-  });
-
-  const [updateQuantity] = useMutation(UPDATE_PRODUCT_QUANTITY, {
-    refetchQueries: [
-      {
-        query: GET_PRODUCTS_LIST,
-        variables: { userId: USER_ID },
-      },
-    ],
   });
 
   useFocusEffect(
@@ -167,92 +146,6 @@ const ListScreen = () => {
       [title]: !prev[title],
     }));
   };
-
-  const handleQuantityPress = useCallback(
-    async (item: Product & { listQuantity?: number }) => {
-      if (!data?.user?.actualList?._id) return;
-
-      const currentQuantity = item.listQuantity ?? 0;
-      const newQuantity = currentQuantity + 1;
-
-      try {
-        await updateQuantity({
-          variables: {
-            models: [
-              {
-                id_composite: {
-                  listId: data.user.actualList._id,
-                  productEan: item.ean,
-                },
-                quantity: newQuantity,
-                supermarket_id: 1,
-                status: "ACTIVE",
-              },
-            ],
-          },
-          optimisticResponse: {
-            __typename: "Mutation",
-            upsertProductFromList: [
-              {
-                __typename: "ListProduct",
-                product: {
-                  __typename: "Product",
-                  ean: item.ean,
-                },
-                quantity: newQuantity,
-              },
-            ],
-          },
-        });
-      } catch (error) {
-        console.error("Failed to update product quantity: ", error);
-      }
-    },
-    [updateQuantity, data],
-  );
-
-  const handleQuantityLongPress = useCallback(
-    async (item: Product & { listQuantity?: number }) => {
-      if (!data?.user?.actualList?._id) return;
-
-      const currentQuantity = item.listQuantity ?? 0;
-      const newQuantity = Math.max(1, currentQuantity - 1);
-
-      try {
-        await updateQuantity({
-          variables: {
-            models: [
-              {
-                id_composite: {
-                  listId: data.user.actualList._id,
-                  productEan: item.ean,
-                },
-                quantity: newQuantity,
-                supermarket_id: 1,
-                status: newQuantity > 0 ? "ACTIVE" : "REMOVED",
-              },
-            ],
-          },
-          optimisticResponse: {
-            __typename: "Mutation",
-            upsertProductFromList: [
-              {
-                __typename: "ListProduct",
-                product: {
-                  __typename: "Product",
-                  ean: item.ean,
-                },
-                quantity: newQuantity,
-              },
-            ],
-          },
-        });
-      } catch (error) {
-        console.error("Failed to update product quantity: ", error);
-      }
-    },
-    [updateQuantity, data],
-  );
 
   if (initialLoading ?? (loading && showSkeleton)) {
     return (
@@ -369,8 +262,6 @@ const ListScreen = () => {
                         params: { id: item.ean },
                       })
                     }
-                    onQuantityPress={handleQuantityPress}
-                    onQuantityLongPress={handleQuantityLongPress}
                   />
                 )}
               </View>
