@@ -14,7 +14,7 @@ import { Button } from "@/components/Button";
 import { gql, useQuery } from "@apollo/client";
 import MenuOption from "@/components/ui/menuOption";
 
-const USER_ID = "68109cfe9179b71ba1cccb41";
+const USER_ID = "6810e84b863363082e36053b";
 
 export const GET_USER = gql`
   query User($userId: String!) {
@@ -29,7 +29,6 @@ export const GET_PRODUCTS_LIST = gql`
   query SupermarketLists($userId: String!) {
     user(id: $userId) {
       actualList {
-        _id
         products {
           product {
             ean
@@ -46,6 +45,19 @@ export default function HomeScreen() {
   const { data: userData } = useQuery(GET_USER, {
     variables: { userId: USER_ID },
   });
+
+  const { data } = useQuery(GET_PRODUCTS_LIST, {
+    variables: {
+      userId: USER_ID,
+    },
+  });
+
+  const productCount = data?.user?.actualList?.products?.length || 0;
+  const totalProducts =
+    data?.user?.actualList?.products?.reduce(
+      (total: any, item: { quantity: any }) => total + item.quantity,
+      0,
+    ) || 0;
 
   return (
     <SafeAreaView className="pt-4">
@@ -71,6 +83,7 @@ export default function HomeScreen() {
             router.push("/(tabs)/warnings");
           }}
           quantity={true}
+          quantityValue={productCount}
         />
         <MenuOption
           Icon={Search}
@@ -86,6 +99,7 @@ export default function HomeScreen() {
             router.push("/(tabs)/to-stock-list");
           }}
           quantity={true}
+          quantityValue={totalProducts}
         />
         <MenuOption
           Icon={Route}
@@ -94,7 +108,13 @@ export default function HomeScreen() {
             router.push("/(tabs)/navigation");
           }}
         />
-        <MenuOption Icon={ChartColumnIncreasing} text="Objectives" />
+        <MenuOption
+          Icon={ChartColumnIncreasing}
+          text="Objectives"
+          onPress={() => {
+            router.push("/objectives");
+          }}
+        />
       </View>
     </SafeAreaView>
   );
