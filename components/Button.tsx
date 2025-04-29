@@ -12,6 +12,7 @@ interface ButtonProps {
   type?: "primary" | "secondary" | "ghost";
   Icon?: LucideIcon | React.FC<SvgProps>;
   text?: string;
+  textStyle?: "h1" | "h2" | "h3" | "bodyBold";
   onPress: (event?: GestureResponderEvent) => void;
   haptic?: boolean;
   loading?: boolean;
@@ -32,6 +33,7 @@ export function Button({
   onPress,
   haptic,
   loading,
+  textStyle = "bodyBold",
 }: ButtonWithTextProps | ButtonWithIconProps) {
   const FinalIcon = loading ? (LoadingIcon as LucideIcon) : Icon;
   return (
@@ -70,7 +72,7 @@ export function Button({
         )}
         {text && (
           <ThemedText
-            style={{ fontFamily: "Raleway_600SemiBold" }}
+            type={textStyle}
             ignoreDarkMode={type === "primary"}
             color={type === "primary" ? "default" : "gradient"}
           >
