@@ -141,6 +141,10 @@ export default function RootLayout() {
                     name="navigation-in-store/index"
                     options={{ headerShown: false }}
                   />
+                  <Stack.Screen
+                    name="objectives/index"
+                    options={{ headerShown: false }}
+                  />
                   <Stack.Screen name="+not-found" />
                 </Stack>
                 <SystemBars style="auto" />

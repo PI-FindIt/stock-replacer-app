@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import { useNavigation } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import { View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -12,28 +12,49 @@ import { ThemedText } from "@/components/ThemedText";
 const ObjectivesPage = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const theme = useColorScheme();
+  const color = theme === "dark" ? "white" : "#292d30";
 
   const pieData = [
     {
       value: 39,
-      color: "#292d30",
-      gradientCenterColor: "#8d9092",
+      color: "#FC648D",
+      gradientCenterColor: "#FC648D",
       focused: true,
     },
     {
       value: 61,
-      color: "#f6f7f7",
-      gradientCenterColor: "#fff",
+      color: "#ECEDEE",
+      gradientCenterColor: "#ECEDEE",
     },
   ];
 
   const barData = [
-    { value: 4, label: "JAN", frontColor: "#fff" },
-    { value: 6, label: "FEB", frontColor: "#fff" },
-    { value: 2, label: "MAR", frontColor: "#fff" },
-    { value: 8, label: "APR", frontColor: "#fff" },
-    { value: 3, label: "MAY", frontColor: "#fff" },
-    { value: 5, label: "JUN", frontColor: "#fff" },
+    {
+      value: 2400,
+      frontColor: color,
+      label: "J",
+    },
+    {
+      value: 3000,
+      frontColor: color,
+      label: "F",
+    },
+    {
+      value: 4000,
+      frontColor: color,
+      label: "M",
+    },
+    {
+      value: 4900,
+      frontColor: color,
+      label: "A",
+    },
+    {
+      value: 2800,
+      frontColor: color,
+      label: "M",
+    },
   ];
 
   return (
@@ -45,62 +66,66 @@ const ObjectivesPage = () => {
           paddingBottom: insets.bottom + 24,
         }}
       >
-        <View className="px-2">
+        <View className="gap-8 px-2">
           <Header
             Title="Objectives"
             IconLeftLeft={ArrowLeft}
             onLeftLeftPress={() => navigation.goBack()}
           />
 
-          <View className="gap-4 p-8">
+          <View className="gap-6 p-6">
             <View className="flex-row items-center justify-between">
-              <ThemedText>Monthly objectives</ThemedText>
-              <ArrowLeft className="text-black" size={24} />
+              <ThemedText type="h3">Monthly objectives</ThemedText>
             </View>
 
-            <View className="items-center gap-4">
+            <View className="flex-row items-center gap-4">
               <PieChart
-                data={pieData}
                 donut
-                showGradient
-                sectionAutoFocus
                 radius={80}
-                innerRadius={60}
-                innerCircleColor="#fff"
-                centerLabelComponent={() => <ThemedText>39%</ThemedText>}
+                innerRadius={54}
+                data={pieData}
+                centerLabelComponent={() => (
+                  <ThemedText type="h3">39%</ThemedText>
+                )}
               />
               <ThemedText>
-                You're at 39% of your objectives for the month!
+                You're at 39% of your {"\n"}objectives for the month!
               </ThemedText>
             </View>
           </View>
 
-          {/* Annual Objectives Section */}
-          <View className="gap-4 p-8">
+          <View className="gap-6 p-6">
             <View className="flex-row items-center justify-between">
-              <ThemedText>Annual objectives</ThemedText>
-              <ArrowLeft className="text-black" size={24} />
+              <ThemedText type="h3">Annual objectives</ThemedText>
             </View>
 
             <View className="items-center">
               <BarChart
                 data={barData}
                 barWidth={32}
-                spacing={21}
-                roundedTop
-                frontColor="lightgray"
-                yAxisThickness={0}
-                xAxisThickness={0}
-                hideRules
-                noOfSections={5}
-                maxValue={8}
-                yAxisTextStyle={{ color: "#8d9092", fontSize: 9 }}
-                xAxisLabelTextStyle={{
-                  color: "#8d9092",
-                  fontSize: 9,
-                  marginTop: 4,
-                }}
                 initialSpacing={10}
+                spacing={24}
+                barBorderRadius={9}
+                xAxisType={"dashed"}
+                xAxisColor={color}
+                yAxisTextStyle={{ color: color }}
+                stepValue={1000}
+                maxValue={6000}
+                noOfSections={6}
+                yAxisLabelTexts={["0", "1k", "2k", "3k", "4k", "5k", "6k"]}
+                labelWidth={40}
+                xAxisLabelTextStyle={{
+                  color: color,
+                  textAlign: "center",
+                }}
+                showLine
+                lineConfig={{
+                  color: "#FC658B",
+                  thickness: 3,
+                  curved: true,
+                  hideDataPoints: true,
+                  shiftY: 10,
+                }}
               />
             </View>
           </View>
