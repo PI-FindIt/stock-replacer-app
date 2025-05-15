@@ -13,7 +13,7 @@ import { gql, useQuery } from "@apollo/client";
 import LinearGradientMask from "@/components/LinearGradientMask";
 import { Skeleton } from "moti/skeleton";
 
-const USER_ID = "68109cfe9179b71ba1cccb41";
+const USER_ID = process.env.EXPO_PUBLIC_USER_ID;
 
 export const GET_PRODUCTS_LIST = gql`
   query SupermarketLists($userId: String!) {

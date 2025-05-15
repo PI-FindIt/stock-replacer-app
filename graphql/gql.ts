@@ -16,6 +16,7 @@ import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/
 type Documents = {
   "\n  query User($userId: String!) {\n    user(id: $userId) {\n      _id\n      first_name\n    }\n  }\n": typeof types.UserDocument;
   "\n  query SupermarketListsAtributes($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n": typeof types.SupermarketListsAtributesDocument;
+  "\n  query SupermarketListsTotal($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n": typeof types.SupermarketListsTotalDocument;
   "\n  query SearchProducts(\n    $searchTerm: String!\n    $nutriScoreFilter: NutriScoreFilter\n    $brandFilter: StrFilter\n  ) {\n    products(\n      filters: {\n        name: { op: ILIKE, value: $searchTerm }\n        nutriScore: $nutriScoreFilter\n        brandName: $brandFilter\n      }\n    ) {\n      ean\n      name\n      brandName\n      genericName\n      quantity\n      images\n      categoryName\n      nutriScore\n    }\n  }\n": typeof types.SearchProductsDocument;
   "\n  query Brands($name: String!) {\n    brands(name: $name) {\n      name\n    }\n  }\n": typeof types.BrandsDocument;
   "\n  query SupermarketLists($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        _id\n        products {\n          product {\n            ean\n            name\n            genericName\n            quantity\n            images\n            categoryName\n            brandName\n            supermarkets {\n              price\n              supermarket {\n                id\n              }\n            }\n          }\n          quantity\n        }\n      }\n    }\n  }\n": typeof types.SupermarketListsDocument;
@@ -30,6 +31,8 @@ const documents: Documents = {
     types.UserDocument,
   "\n  query SupermarketListsAtributes($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n":
     types.SupermarketListsAtributesDocument,
+  "\n  query SupermarketListsTotal($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n":
+    types.SupermarketListsTotalDocument,
   "\n  query SearchProducts(\n    $searchTerm: String!\n    $nutriScoreFilter: NutriScoreFilter\n    $brandFilter: StrFilter\n  ) {\n    products(\n      filters: {\n        name: { op: ILIKE, value: $searchTerm }\n        nutriScore: $nutriScoreFilter\n        brandName: $brandFilter\n      }\n    ) {\n      ean\n      name\n      brandName\n      genericName\n      quantity\n      images\n      categoryName\n      nutriScore\n    }\n  }\n":
     types.SearchProductsDocument,
   "\n  query Brands($name: String!) {\n    brands(name: $name) {\n      name\n    }\n  }\n":
@@ -74,6 +77,12 @@ export function gql(
 export function gql(
   source: "\n  query SupermarketListsAtributes($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n",
 ): (typeof documents)["\n  query SupermarketListsAtributes($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(
+  source: "\n  query SupermarketListsTotal($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n",
+): (typeof documents)["\n  query SupermarketListsTotal($userId: String!) {\n    user(id: $userId) {\n      actualList {\n        products {\n          product {\n            ean\n          }\n          quantity\n        }\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

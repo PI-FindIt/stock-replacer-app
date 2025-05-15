@@ -13,7 +13,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { gql, useQuery } from "@apollo/client";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
-const USER_ID = "68109cfe9179b71ba1cccb41";
+const USER_ID = process.env.EXPO_PUBLIC_USER_ID;
 
 export const GET_PRODUCTS_LIST_WARNING = gql`
   query SupermarketListsWarnings($userId: String!) {

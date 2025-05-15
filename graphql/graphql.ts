@@ -557,6 +557,25 @@ export type SupermarketListsAtributesQuery = {
   } | null;
 };
 
+export type SupermarketListsTotalQueryVariables = Exact<{
+  userId: Scalars["String"]["input"];
+}>;
+
+export type SupermarketListsTotalQuery = {
+  __typename?: "Query";
+  user?: {
+    __typename?: "User";
+    actualList?: {
+      __typename?: "SupermarketList";
+      products: Array<{
+        __typename?: "ListProduct";
+        quantity: number;
+        product: { __typename?: "Product"; ean: string };
+      }>;
+    } | null;
+  } | null;
+};
+
 export type SearchProductsQueryVariables = Exact<{
   searchTerm: Scalars["String"]["input"];
   nutriScoreFilter?: InputMaybe<NutriScoreFilter>;
@@ -866,6 +885,94 @@ export const SupermarketListsAtributesDocument = {
 } as unknown as DocumentNode<
   SupermarketListsAtributesQuery,
   SupermarketListsAtributesQueryVariables
+>;
+export const SupermarketListsTotalDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "SupermarketListsTotal" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "userId" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "String" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "user" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "id" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "userId" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "actualList" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "products" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "product" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "ean" },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "quantity" },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  SupermarketListsTotalQuery,
+  SupermarketListsTotalQueryVariables
 >;
 export const SearchProductsDocument = {
   kind: "Document",
