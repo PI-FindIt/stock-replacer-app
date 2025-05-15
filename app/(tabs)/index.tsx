@@ -14,7 +14,13 @@ import { Button } from "@/components/Button";
 import { gql, useQuery } from "@apollo/client";
 import MenuOption from "@/components/ui/menuOption";
 
-const USER_ID = "6810e84b863363082e36053b";
+const USER_ID = process.env.EXPO_PUBLIC_USER_ID;
+
+if (!USER_ID) {
+  throw new Error(
+    "EXPO_PUBLIC_USER_ID is not defined in the environment variables.",
+  );
+}
 
 export const GET_USER = gql`
   query User($userId: String!) {
