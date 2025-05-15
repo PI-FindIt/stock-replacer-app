@@ -26,11 +26,11 @@ jobs:
       - name: 📦 Install dependencies
         run: bun install
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@main
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      # - name: 🏗 Setup EAS
+      #   uses: expo/expo-github-action@main
+      #   with:
+      #     eas-version: latest
+      #     token: ${{ secrets.EXPO_TOKEN }}
 
       # Get current fingerprint info and builds to check if we need to do a version bump
       - name: Get fingerprint info
