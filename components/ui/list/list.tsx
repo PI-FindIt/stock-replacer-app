@@ -98,10 +98,7 @@ const List = ({
                           text={item.listQuantity?.toString() ?? "0"}
                         />
                       ) : (
-                        <Button
-                          text={"Replace " + item.listQuantity}
-                          onPress={() => {}}
-                        ></Button>
+                        <Button text="Replace" onPress={() => {}}></Button>
                       )}
                     </View>
                   )}

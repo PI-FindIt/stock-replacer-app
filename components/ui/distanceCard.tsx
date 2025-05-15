@@ -8,10 +8,16 @@ import { Button } from "../Button";
 
 type DistanceCardProps = {
   onStartShoppingPress?: () => void;
+  totalProducts?: number;
+  totalCategories?: number;
+  estimatedTime?: number;
 };
 
 const DistanceCardSet = ({
   onStartShoppingPress = () => {},
+  totalProducts,
+  totalCategories,
+  estimatedTime,
 }: DistanceCardProps) => {
   const itemBackgroundColor = useThemeColor("background");
 
@@ -26,14 +32,15 @@ const DistanceCardSet = ({
       >
         <View className="p-3 pt-0">
           <ThemedText type="h3" className="text-center">
-            Replace 322 product of 7 categories. Estimated time of 23 minutes.
+            Replace {totalProducts} products of {totalCategories} categories.
+            Estimated time of {estimatedTime} minutes.
           </ThemedText>
         </View>
         <View className="mb-4">
           <Button
             onPress={onStartShoppingPress}
             Icon={Play}
-            text="Start shopping"
+            text="Start replacing"
           />
         </View>
       </View>
