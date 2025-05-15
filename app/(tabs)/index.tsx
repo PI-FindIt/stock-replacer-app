@@ -25,8 +25,8 @@ export const GET_USER = gql`
   }
 `;
 
-export const GET_PRODUCTS_LIST = gql`
-  query SupermarketLists($userId: String!) {
+export const GET_PRODUCTS_LIST_ATRIBUTES = gql`
+  query SupermarketListsAtributes($userId: String!) {
     user(id: $userId) {
       actualList {
         products {
@@ -46,7 +46,7 @@ export default function HomeScreen() {
     variables: { userId: USER_ID },
   });
 
-  const { data } = useQuery(GET_PRODUCTS_LIST, {
+  const { data } = useQuery(GET_PRODUCTS_LIST_ATRIBUTES, {
     variables: {
       userId: USER_ID,
     },

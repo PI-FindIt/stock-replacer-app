@@ -15,8 +15,8 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 
 const USER_ID = "68109cfe9179b71ba1cccb41";
 
-export const GET_PRODUCTS_LIST = gql`
-  query SupermarketLists($userId: String!) {
+export const GET_PRODUCTS_LIST_WARNING = gql`
+  query SupermarketListsWarnings($userId: String!) {
     user(id: $userId) {
       actualList {
         _id
@@ -49,7 +49,7 @@ const Warnings = () => {
   const backgroundColor = useThemeColor("background");
   const theme = useColorScheme();
 
-  const { data, loading, refetch } = useQuery(GET_PRODUCTS_LIST, {
+  const { data, loading, refetch } = useQuery(GET_PRODUCTS_LIST_WARNING, {
     variables: {
       userId: USER_ID,
     },

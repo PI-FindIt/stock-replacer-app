@@ -80,7 +80,7 @@ type ListProduct {
   product: Product!
   quantity: Float!
   status: Status!
-  supermarket: Supermarket!
+  supermarketInfo: SupermarketWithPrice!
   supermarket_id: Int!
 }
 
@@ -136,10 +136,21 @@ enum Operator {
   IS_NOT
   LE
   LIKE
+  LIMIT
   LT
   NE
   NOT_CONTAINS
   NOT_IN
+  OFFSET
+}
+
+enum Order {
+  ASC
+  ASC_NULLS_FIRST
+  ASC_NULLS_LAST
+  DESC
+  DESC_NULLS_FIRST
+  DESC_NULLS_LAST
 }
 
 enum PathType {
@@ -169,16 +180,19 @@ input PreferencesInput {
 }
 
 type Product {
+  blurhash: String
   brand: Brand!
   brandName: String
   category: Category!
   categoryName: String
   ean: String!
   genericName: String!
+  genericNameEn: String!
   images: [String!]!
   ingredients: String!
   keywords: [String!]!
   name: String!
+  nameEn: String!
   nutriScore: NutriScore!
   nutrition: JSON!
   quantity: String!
@@ -187,32 +201,49 @@ type Product {
 }
 
 input ProductFilter {
+  and: [ProductFilter!] = null
   brandName: StrFilter = null
   categoryName: StrFilter = null
   ean: StrFilter = null
   genericName: StrFilter = null
+  genericNameEn: StrFilter = null
   images: StrListFilter = null
   ingredients: StrFilter = null
   keywords: StrListFilter = null
   name: StrFilter = null
+  nameEn: StrFilter = null
   nutriScore: NutriScoreFilter = null
+  or: [ProductFilter!] = null
   quantity: StrFilter = null
   unit: StrFilter = null
 }
 
 input ProductInput {
+  blurhash: String
   brandName: String
   categoryName: String
   ean: String!
   genericName: String!
+  genericNameEn: String!
   images: [String!]!
   ingredients: String!
   keywords: [String!]!
   name: String!
+  nameEn: String!
   nutriScore: NutriScore!
   nutrition: JSON!
   quantity: String!
   unit: String!
+}
+
+input ProductOrder {
+  brandName: Order = null
+  categoryName: Order = null
+  ean: Order = null
+  name: Order = null
+  nameEn: Order = null
+  nutriScore: Order = null
+  quantity: Order = null
 }
 
 type ProductWithPrice {
@@ -226,14 +257,35 @@ type Query {
   categories(name: String!): [Category!]!
   category(name: String!): Category
   product(ean: String!): Product
-  products(filters: ProductFilter!): [Product!]!
+  products(
+    filters: ProductFilter = null
+    limit: Int! = 10
+    offset: Int! = 0
+    orderBy: ProductOrder = null
+  ): [Product!]!
+  recommendationsByProduct(
+    ean: String!
+    filters: RecommendationFilterInput = null
+    recommendations: Int! = 5
+  ): [Product!]!
+  recommendationsByText(
+    filters: RecommendationFilterInput = null
+    query: String!
+    recommendations: Int! = 5
+  ): [Product!]!
   supermarket(id: Int!): Supermarket
   supermarketLocation(id: Int!, supermarketId: Int!): SupermarketLocation
   supermarketLocations(
     filters: SupermarketLocationFilter!
   ): [SupermarketLocation!]!
   supermarkets(filters: SupermarketFilter!): [Supermarket!]!
+  textToProduct(text: String!): [Product!]!
   user(id: String!): User
+}
+
+input RecommendationFilterInput {
+  brand: String = null
+  category: String = null
 }
 
 enum Status {
@@ -256,8 +308,10 @@ type Supermarket {
   description: String
   id: Int!
   image: String
+  imageBlurhash: String
   locations: [SupermarketLocation!]!
   logo: String
+  logoBlurhash: String
   name: String!
   products: [ProductWithPrice!]!
   services: [SupermarketServices!]!
@@ -313,6 +367,8 @@ input SupermarketServicesListFilter {
 }
 
 type SupermarketWithPrice {
+  ean: String!
+  id: Int!
   price: Float!
   supermarket: Supermarket!
 }
