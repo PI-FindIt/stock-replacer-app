@@ -9,7 +9,6 @@ import "../global.css";
 import { BackgroundProvider } from "@/components/BackgroundProvider";
 import type { Theme } from "@react-navigation/native/src/types";
 import { fonts } from "@react-navigation/native/src/theming/fonts";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Raleway_300Light,
   Raleway_300Light_Italic,
@@ -35,6 +34,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SystemBars } from "react-native-edge-to-edge";
 import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import Toast from "@/components/Toast";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -101,19 +102,29 @@ export default function RootLayout() {
     fonts,
   };
 
-  const queryClient = new QueryClient();
+  if (__DEV__) {
+    loadDevMessages();
+    loadErrorMessages();
+  }
+
+  if (!process.env.EXPO_PUBLIC_API_URL) {
+    throw new Error("EXPO_PUBLIC_API_URL is not defined. Check your .env file");
+  }
+
+  if (!process.env.EXPO_PUBLIC_CDN_URL) {
+    throw new Error("EXPO_PUBLIC_CDN_URL is not defined. Check your .env file");
+  }
+
   const client = new ApolloClient({
-    uri: "http://10.102.219.126/",
+    uri: process.env.EXPO_PUBLIC_API_URL,
     cache: new InMemoryCache(),
   });
 
   return (
     <ApolloProvider client={client}>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <GestureHandlerRootView>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <GestureHandlerRootView>
+          <BottomSheetModalProvider>
             <SafeAreaProvider>
               <BackgroundProvider>
                 <Stack
@@ -148,11 +159,12 @@ export default function RootLayout() {
                   <Stack.Screen name="+not-found" />
                 </Stack>
                 <SystemBars style="auto" />
+                <Toast />
               </BackgroundProvider>
             </SafeAreaProvider>
-          </GestureHandlerRootView>
-        </ThemeProvider>
-      </QueryClientProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </ThemeProvider>
     </ApolloProvider>
   );
 }
